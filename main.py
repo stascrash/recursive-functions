@@ -16,9 +16,7 @@ RANDOM_VALS = ['qyumjm', 'urycjk', 'guppsz', 'xvdgif', 'ylgvkj', 'krzyai', 'gbas
 			   'ryypro', 'atupmn', 'obzdhf', 'oertjf', 'rpaatm', 'ilmzkt', 'popjtp', 'evxhxy', 'lhquut', 'mwlfzy']
 RANDOM_NAMES = ['FvKIDB', 'xoWKru', 'YEagKQ', 'LrQuww', 'UwsSrC', 'mzHeWZ', 'SGmuiD', 'thdvDH', 'JGPQdx', 'mtTOWR']
 
-MAX_FIRST_CHILDREN = 105
-MAX_SECOND_CHILDREN = 305
-MAX_THIRD_CHILDREN = 35
+MAX_CHILDREN = 10
 
 
 class Data(object):
@@ -29,16 +27,20 @@ class Data(object):
 		self.name = name
 
 
-def build_complex_data(root_data=None):
+def build_complex_data(root_data=None, depth=2):
 	if not root_data:
 		root_data = Data('root')
-
-	root_data.children = generate_children(root_data, randrange(0, MAX_FIRST_CHILDREN))
-	for ch in root_data.children:
-		ch.children = generate_children(ch, randrange(0, MAX_SECOND_CHILDREN))
-		for cch in ch.children:
-			cch.children = generate_children(cch, randrange(0, MAX_THIRD_CHILDREN))
+	generate_depth_tree(root_data, depth)
 	return root_data
+
+
+def generate_depth_tree(node, depth):
+	if depth < 0:
+		return
+
+	node.children = generate_children(node, randrange(0, MAX_CHILDREN))
+	for ch in node.children:
+		generate_depth_tree(ch, depth - 1)
 
 
 def generate_children(root, max_range):
@@ -131,7 +133,7 @@ def find(data, name=None, attr=None, val=None, found=None):
 
 
 def main():
-	root = build_complex_data()
+	root = build_complex_data(depth=5)
 
 	attr_obj = find(root, attr='hzxv')
 	val_obj = find(root, val='emefcb')
